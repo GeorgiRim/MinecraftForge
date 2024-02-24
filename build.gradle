@@ -8,27 +8,13 @@ buildscript {
             name = "sonatype"
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
-        // fixes building errors due to switch to HTTPS
         maven {
-            name = "maven-mirror"
-            url = "https://repo.maven.apache.org/maven2"
+            name = "jitpack"
+            url = "https://jitpack.io"
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
-    }
-}
-
-// fixes building errors due to switch to HTTPS
-allprojects {
-    repositories {
-        all { ArtifactRepository repo ->
-            if (repo instanceof MavenArtifactRepository){
-                if (repo.url.toString().startsWith("http://repo1.maven.org/maven2")) {
-                    repo.url = repo.url.toString().replace("http://", "https://")
-                }
-            }
-        }
+        classpath 'com.github.Doenerstyle:ForgeGradle:1.2-1.0.+'
     }
 }
 
