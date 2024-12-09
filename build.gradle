@@ -1,7 +1,5 @@
 buildscript {
     repositories {
-        mavenCentral()
-        mavenLocal()
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
@@ -10,9 +8,13 @@ buildscript {
             name = "sonatype"
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
+        maven {
+            name = "jitpack"
+            url = "https://jitpack.io"
+        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        classpath 'com.github.Doenerstyle:ForgeGradle:1.2-1.0.+'
     }
 }
 
@@ -49,79 +51,10 @@ jenkins {
     job = 'minecraftforge'
 }
 
-// crowdin stuff
-if (project.hasProperty("crowdinKey"))
-    tasks.getLocalizations.apiKey = project.crowdinKey
-
 
 launch4j {
     jreMinVersion = '1.6.0'
 }
 
-uploadArchives {
-    repositories {
-        add getProject().repositories.mavenLocal()
-    }
-    repositories.mavenDeployer {
-        configuration = configurations.deployJars
-
-        if (project.hasProperty("filesmaven")) {
-            logger.info('Publishing to files server')
-            repository(url: project.filesmaven.url) {
-                authentication(userName: project.filesmaven.username, privateKey: project.filesmaven.key)
-            }
-        } else {
-            logger.info('Publishing to repo folder')
-            repository(url: 'file://localhost/' + project.file('repo').getAbsolutePath())
-        }
-
-        pom {
-            groupId = project.group
-            version = project.version
-            artifactId = project.archivesBaseName
-        }
-        pom.project {
-            name project.archivesBaseName
-            packaging 'jar'
-            description 'Minecraft Forge API'
-            url 'https://github.com/MinecraftForge/MinecraftForge'
-
-            scm {
-                url 'https://github.com/MinecraftForge/MinecraftForge'
-                connection 'scm:git:git://github.com/MinecraftForge/MinecraftForge.git'
-                developerConnection 'scm:git:git@github.com:MinecraftForge/MinecraftForge.git'
-            }
-
-            issueManagement {
-                system 'github'
-                url 'https://github.com/MinecraftForge/MinecraftForge/issues'
-            }
-
-            licenses {
-                license {
-                    name 'Forge Public License'
-                    url 'https://raw.github.com/MinecraftForge/MinecraftForge/master/MinecraftForge-License.txt'
-                    distribution 'repo'
-                }
-            }
-
-            developers {
-                developer {
-                    id 'cpw'
-                    name 'cpw'
-                    roles { role 'developer' }
-                }
-                developer {
-                    id 'LexManos'
-                    name 'Lex Manos'
-                    roles { role 'developer' }
-                }
-                developer {
-                    id 'AbrarSyed'
-                    name 'Abrar Syed'
-                    roles { role 'contributor' }
-                }
-            }
-        }
-    }
-}
+// fixes building jar, although errors are present when building
+createChangelog.enabled = false

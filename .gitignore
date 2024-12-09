@@ -21,3 +21,5 @@
 /patches-/
 # FML changelog
 changelog.txt
+
+*.bat
